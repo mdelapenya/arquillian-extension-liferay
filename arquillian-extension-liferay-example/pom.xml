@@ -56,7 +56,7 @@
 			<id>download-test-environment</id>
 			<activation>
 				<file>
-					<missing>src/test/resources/zip/.unzipped</missing>
+					<missing>src/test/resources/zip/.downloaded</missing>
 				</file>
 			</activation>
 			<build>
@@ -98,13 +98,43 @@
 						<version>1.6</version>
 						<executions>
 							<execution>
+								<id>create-file</id>
+								<phase>generate-test-sources</phase>
+								<configuration>
+									<target>
+										<touch file="${project.basedir}/src/test/resources/zip/.downloaded" />
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>unzip-test-environment</id>
+			<activation>
+				<file>
+					<exists>src/test/resources/zip/.downloaded</exists>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.6</version>
+						<executions>
+							<execution>
 								<id>unzip-liferay</id>
 								<phase>process-test-sources</phase>
 								<configuration>
 									<target>
 										<echo message="unzip Liferay" />
 										<unzip src="${project.basedir}/src/test/resources/zip/liferay.zip" dest="${test.resources.home}" />
-										<chmod dir="${liferay.home}/tomcat-7.0.62/bin/" perm="ugo+rx" includes="**/*.sh" />
 									</target>
 								</configuration>
 								<goals>
@@ -118,6 +148,19 @@
 									<target>
 										<echo message="unzip tomcat" />
 										<unzip src="${project.basedir}/src/test/resources/zip/tomcat.zip" dest="${test.resources.home}" />
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>change-execution-levels</id>
+								<phase>process-test-sources</phase>
+								<configuration>
+									<target>
+										<echo message="Changing execution levels for executable files" />
+										<chmod dir="${liferay.home}/tomcat-7.0.62/bin/" perm="ugo+rx" includes="**/*.sh" />
 									</target>
 								</configuration>
 								<goals>
@@ -169,7 +212,7 @@
 						<executions>
 							<execution>
 								<id>clean-tomcat</id>
-								<phase>clean</phase>
+								<phase>process-test-resources</phase>
 								<goals>
 									<goal>exec</goal>
 								</goals>
