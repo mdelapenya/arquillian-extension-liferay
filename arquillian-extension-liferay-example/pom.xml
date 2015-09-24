@@ -1,24 +1,53 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-<modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-<parent>
-	<artifactId>arquillian-extension-liferay</artifactId>
-	<groupId>org.arquillian.liferay</groupId>
-	<version>1.0.0.Final-SNAPSHOT</version>
-	<relativePath>../pom.xml</relativePath>
-</parent>
+	<parent>
+		<artifactId>arquillian-extension-liferay</artifactId>
+		<groupId>org.arquillian.liferay</groupId>
+		<version>1.0.0.Final-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
 
 	<groupId>org.arquillian.liferay</groupId>
 	<artifactId>arquillian-liferay-extension-example</artifactId>
 	<version>1.0.0.Final-SNAPSHOT</version>
 	<name>Arquillian Liferay Extension Example</name>
 	<description>Arquillian Liferay Extension Example</description>
+	<packaging>bundle</packaging>
+
+	<repositories>
+		<repository>
+			<id>liferay-ce</id>
+			<name>Liferay CE</name>
+			<url>https://repository.liferay.com/nexus/content/groups/liferay-ce</url>
+			<releases><enabled>true</enabled></releases>
+			<snapshots><enabled>true</enabled></snapshots>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>liferay-ce</id>
+			<url>https://repository.liferay.com/nexus/content/groups/liferay-ce/</url>
+			<releases><enabled>true</enabled></releases>
+			<snapshots><enabled>true</enabled></snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<properties>
+		<osgi.version>6.0.0</osgi.version>
+		<plugin.type>portlet</plugin.type>
 		<test.resources.home>${project.basedir}/target/test-resources</test.resources.home>
-		<liferay.home>${test.resources.home}/liferay/liferay-portal-${version.liferay}</liferay.home>
-		<version.liferay>7.0-ce-m7</version.liferay>
-		<url.liferay><![CDATA[project/lportal/Liferay%20Portal/7.0.0%20M7/liferay-portal-tomcat-7.0-ce-m7-20150819114119178.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Flportal%2Ffiles%2FLiferay%2520Portal%2F7.0.0%2520M7%2F&ts=1440746066&use_mirror=vorboss]]></url.liferay>
+		<liferay.version>7.0.0-m7</liferay.version>
+		<liferay.maven.plugin.version>7.0.0-SNAPSHOT</liferay.maven.plugin.version>
+		<liferay.auto.deploy.dir>${liferay.app.server.parent.dir}/deploy</liferay.auto.deploy.dir>
+		<liferay.app.server.deploy.dir>${liferay.home}/webapps</liferay.app.server.deploy.dir>
+		<liferay.app.server.lib.global.dir>${liferay.home}/lib/ext</liferay.app.server.lib.global.dir>
+		<liferay.app.server.parent.dir>${project.basedir}/test-resources/liferay</liferay.app.server.parent.dir>
+		<liferay.app.server.portal.dir>${liferay.home}/webapps/ROOT</liferay.app.server.portal.dir>
+		<liferay.home>${test.resources.home}/liferay/liferay-portal-${liferay.ce.version}</liferay.home>
+		<liferay.ce.version>7.0-ce-m7</liferay.ce.version>
+		<url.liferay><![CDATA[project/lportal/Liferay%20Portal/7.0.0%20M7/liferay-portal-tomcat-${liferay.ce.version}-20150819114119178.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Flportal%2Ffiles%2FLiferay%2520Portal%2F7.0.0%2520M7%2F&ts=1440746066&use_mirror=vorboss]]></url.liferay>
 		<browser>phantomjs</browser>
 	</properties>
 
@@ -100,7 +129,7 @@
 								<phase>process-test-sources</phase>
 								<configuration>
 									<target>
-										<echo file="${test.resources.home}/liferay/liferay-portal-7.0-ce-m7/portal-ext.properties" >browser.launcher.url=</echo>
+										<echo file="${liferay.home}/portal-ext.properties" >browser.launcher.url=</echo>
 									</target>
 								</configuration>
 								<goals>
@@ -195,7 +224,25 @@
 		<dependency>
 			<groupId>com.liferay.portal</groupId>
 			<artifactId>portal-service</artifactId>
-			<version>7.0.0-m7</version>
+			<version>${liferay.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.liferay.portal</groupId>
+			<artifactId>util-bridges</artifactId>
+			<version>${liferay.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.liferay.portal</groupId>
+			<artifactId>util-taglib</artifactId>
+			<version>${liferay.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.liferay.portal</groupId>
+			<artifactId>util-java</artifactId>
+			<version>${liferay.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -221,6 +268,30 @@
 			<version>2.1.0.Alpha2</version>
 			<type>pom</type>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>${osgi.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.portlet</groupId>
+			<artifactId>portlet-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.4</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
@@ -253,7 +324,7 @@
 							<outputDirectory>${liferay.home}/tomcat-7.0.62/bin</outputDirectory>
 							<resources>
 								<resource>
-									<directory>${test.resources.home}/liferay/config/bin</directory>
+									<directory>${project.basedir}/src/test/resources/liferay/config/bin</directory>
 									<filtering>true</filtering>
 								</resource>
 							</resources>
@@ -285,7 +356,7 @@
 							<outputDirectory>${liferay.home}/tomcat-7.0.62/conf</outputDirectory>
 							<resources>
 								<resource>
-									<directory>${test.resources.home}/liferay/config/conf</directory>
+									<directory>${project.basedir}/src/test/resources/liferay/config/conf</directory>
 									<filtering>true</filtering>
 								</resource>
 							</resources>
@@ -342,6 +413,49 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.liferay.maven.plugins</groupId>
+				<artifactId>liferay-maven-plugin</artifactId>
+				<version>${liferay.maven.plugin.version}</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>build-css</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<autoDeployDir>${liferay.auto.deploy.dir}</autoDeployDir>
+					<appServerDeployDir>${liferay.app.server.deploy.dir}</appServerDeployDir>
+					<appServerLibGlobalDir>${liferay.app.server.lib.global.dir}</appServerLibGlobalDir>
+					<appServerPortalDir>${liferay.app.server.portal.dir}</appServerPortalDir>
+					<liferayVersion>${liferay.version}</liferayVersion>
+					<pluginType>portlet</pluginType>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Export-Package>org.arquillian.liferay.sample.api</Export-Package>
+						<Private-Package>org.arquillian.liferay.sample.internal.*</Private-Package>
+						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+						<Bundle-Activator>org.arquillian.liferay.sample.activator.SampleBundleActivator</Bundle-Activator>
+					</instructions>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
