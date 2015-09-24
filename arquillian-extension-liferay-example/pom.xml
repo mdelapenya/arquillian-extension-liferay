@@ -45,7 +45,7 @@
 		<liferay.app.server.lib.global.dir>${liferay.home}/lib/ext</liferay.app.server.lib.global.dir>
 		<liferay.app.server.parent.dir>${project.basedir}/test-resources/liferay</liferay.app.server.parent.dir>
 		<liferay.app.server.portal.dir>${liferay.home}/webapps/ROOT</liferay.app.server.portal.dir>
-		<liferay.home>${test.resources.home}/liferay/liferay-portal-${liferay.ce.version}</liferay.home>
+		<liferay.home>${test.resources.home}/liferay-portal-${liferay.ce.version}</liferay.home>
 		<liferay.ce.version>7.0-ce-m7</liferay.ce.version>
 		<url.liferay><![CDATA[project/lportal/Liferay%20Portal/7.0.0%20M7/liferay-portal-tomcat-${liferay.ce.version}-20150819114119178.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Flportal%2Ffiles%2FLiferay%2520Portal%2F7.0.0%2520M7%2F&ts=1440746066&use_mirror=vorboss]]></url.liferay>
 		<browser>phantomjs</browser>
@@ -103,7 +103,7 @@
 								<configuration>
 									<target>
 										<echo message="unzip Liferay" />
-										<unzip src="${project.basedir}/src/test/resources/zip/liferay.zip" dest="${test.resources.home}/liferay" />
+										<unzip src="${project.basedir}/src/test/resources/zip/liferay.zip" dest="${test.resources.home}" />
 										<chmod dir="${liferay.home}/tomcat-7.0.62/bin/" perm="ugo+rx" includes="**/*.sh" />
 									</target>
 								</configuration>
@@ -117,7 +117,7 @@
 								<configuration>
 									<target>
 										<echo message="unzip tomcat" />
-										<unzip src="${project.basedir}/src/test/resources/zip/tomcat.zip" dest="${test.resources.home}/tomcat" />
+										<unzip src="${project.basedir}/src/test/resources/zip/tomcat.zip" dest="${test.resources.home}" />
 									</target>
 								</configuration>
 								<goals>
