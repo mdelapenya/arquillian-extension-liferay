@@ -27,7 +27,7 @@
 			<id>download-test-environment</id>
 			<activation>
 				<file>
-					<missing>test-resources/unziped-successfully</missing>
+					<missing>src/test/resources/zip/.unzipped</missing>
 				</file>
 			</activation>
 			<build>
@@ -46,7 +46,7 @@
 								<configuration>
 									<url>http://downloads.sourceforge.net</url>
 									<fromFile>${url.liferay}</fromFile>
-									<toFile>${test.resources.home}/liferay/zip/liferay.zip</toFile>
+									<toFile>${project.basedir}/src/test/resources/zip/liferay.zip</toFile>
 								</configuration>
 							</execution>
 							<execution>
@@ -58,7 +58,7 @@
 								<configuration>
 									<url>http://archive.apache.org</url>
 									<fromFile>dist/tomcat/tomcat-7/v7.0.62/bin/apache-tomcat-7.0.62.zip</fromFile>
-									<toFile>${test.resources.home}/tomcat/zip/tomcat.zip</toFile>
+									<toFile>${project.basedir}/src/test/resources/zip/tomcat.zip</toFile>
 								</configuration>
 							</execution>
 						</executions>
@@ -74,7 +74,7 @@
 								<configuration>
 									<target>
 										<echo message="unzip Liferay" />
-										<unzip src="${test.resources.home}/liferay/zip/liferay.zip" dest="${test.resources.home}/liferay" />
+										<unzip src="${project.basedir}/src/test/resources/zip/liferay.zip" dest="${test.resources.home}/liferay" />
 										<chmod dir="${liferay.home}/tomcat-7.0.62/bin/" perm="ugo+rx" includes="**/*.sh" />
 									</target>
 								</configuration>
@@ -88,7 +88,7 @@
 								<configuration>
 									<target>
 										<echo message="unzip tomcat" />
-										<unzip src="${test.resources.home}/tomcat/zip/tomcat.zip" dest="${test.resources.home}/tomcat" />
+										<unzip src="${project.basedir}/src/test/resources/zip/tomcat.zip" dest="${test.resources.home}/tomcat" />
 									</target>
 								</configuration>
 								<goals>
@@ -112,7 +112,7 @@
 								<phase>process-test-sources</phase>
 								<configuration>
 									<target>
-										<touch file="${test.resources.home}/unziped-successfully" />
+										<touch file="${project.basedir}/src/test/resources/zip/.unzipped" />
 									</target>
 								</configuration>
 								<goals>
@@ -128,7 +128,7 @@
 			<id>clean-tomcat</id>
 			<activation>
 				<file>
-					<exists>test-resources/unziped-successfully</exists>
+					<exists>src/test/resources/zip/.unzipped</exists>
 				</file>
 			</activation>
 			<build>
